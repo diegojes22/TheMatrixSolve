@@ -141,19 +141,63 @@ public class Matriz {
      * @return Devolvemos la matriz en un String 
      */
     public String printMatriz() {
-        String str = "[\n";
+        String str = "";
         
-        // Busqueda de los elementos
         for(int i = 0; i < n; i++) {
-            str += "\t";
-            for(int j = 0; j < m; j++) {
-                str += matriz[i][j] + " ";
-            }
-            
-            str += "\n";
+            str += this.printVector(matriz[i])+"\n";
+        }
+         
+        return str;
+    }
+    
+    /**
+     * Obtenemos un valor espesifico de la posicion
+     * (n, m)
+     * 
+     * @param n
+     * @param m
+     * @return 
+     */
+    public double getMatrizVal(int n, int m) {
+        if(n > this.n || m > this.m) {
+            return 0;
         }
         
-        str += ']'; 
+        return matriz[n][m];
+    }
+    
+    /**
+     * Podemos imprimir cualquier vector de una forma agradable.
+     * 
+     * @param v  Vector a imprimir
+     * @return 
+     */
+    public static String printVector(double v[]) {
+        String str = "[ ";
+        
+        for(int i = 0; i < v.length; i++) {
+            str += v[i] + " ";
+        }
+        str += " ]";
+        
+        return str;
+    }
+    
+    /**
+     * Tambien imprimimos un vector, solo que este metodo
+     * esta diseñado para poder ser impreso de forma que
+     * se vea como una respuesta de un sistema de ecuaciones.
+     * 
+     * @param v  Vector a imprimir
+     * @return 
+     */
+    public static String printVectorSolution(double v[]) {
+        String str = "";
+        
+        for(int i = 0; i < v.length; i++) {
+            str += "x" + (i+1) + " = " + v[i] + "\n";
+        }
+        
         return str;
     }
     

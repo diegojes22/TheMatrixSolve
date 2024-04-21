@@ -1,5 +1,6 @@
 package net.diego.sistemasdeecuaciones;
 
+import DUtils.src.*;
 import java.util.Scanner;
 
 /**
@@ -29,46 +30,44 @@ public class TestSistemasEcuaciones {
         int opcion;
         
         // Menu Inicio
-        System.out.println("Selecciona el metodo a utilizar...");
-        System.out.println("[1] Mertodo de Cramer");
-        System.out.println("[2] Metodo de Gauss-Jordan");
-        System.out.println("[3] Metodo de eliminacoion Gaussiana");
-        opcion=input.nextInt();
+        opcion = Menu.run(input, "..:: Seleccione el metodo a utilizar ::..", new String[]{
+            "Salir", 
+            "Metodo de Cramer",
+            "Metodo de Gauss-Jordan",
+            "Metodo de eliminacion Gaussiana (proximamente)"
+        });
         
         switch(opcion){
             case 1:
-                /* Resolver por metodo de Cramer (Solo puede ser matriz cuadrada)*/
+                /* Metodo de Grammer */
+                System.out.print("Ingrese el numero de ecuaciones: "); int n = input.nextInt();
                 
-                System.out.print("Ingrese el número de ecuaciones: ");
-                int n = input.nextInt();
-
-                // Declarar matrices nesesarias para la operacion
-                double[][] coefficients = new double[n][n];  // Matriz de coeficientes
-                double[] constants = new double[n];          // Vector de resultados
-
-                // Solicitar los coeficientes y constantes
-                System.out.println("Ingrese los coeficientes de las ecuaciones:");
-                for (int i = 0; i < n; i++) {
-                    for (int j = 0; j < n; j++) {
-                        System.out.print("Ingrese el coeficiente de X" + (j + 1) + " en la ecuación " + (i + 1) + ": ");
-                        coefficients[i][j] = input.nextDouble();
+                Matriz coeficientes = new Matriz(n, n, "Matriz de coeficientes");
+                double[] constantes = new double[n];
+                
+                // LLenar matriz
+                for(int i = 0; i < n; i++) {
+                    for(int j = 0; j < n; j++) {
+                        // Valor de las filas
+                        System.out.print("Ingrese el valor "+i+", "+j+" : ");
+                        coeficientes.updateMatrizVal(i, j, input.nextDouble());
+                        System.out.println(coeficientes.printMatriz());
                     }
-                    System.out.print("Ingrese la constante en la ecuación (termino independiente) " + (i + 1) + ": ");
-                    constants[i] = input.nextDouble();
+                    // valor del termino independiente
+                    System.out.print("Ingrese el valor del termino independiente: ");
+                    constantes[i] = input.nextDouble();
                 }
                 
-                // Aplicar el metodo
-                double[] solutions = cramer.solveUsingCramer(coefficients, constants);
+                // Aplicar el metodo para la solucion
+                double[] solutions = cramer.solveUsingCramer(coeficientes.getMatriz(), constantes);
 
                 // Imprimir la solucion
-                System.out.println("Soluciones:");
-                for (int i = 0; i < n; i++) {
-                    System.out.println("x" + (i + 1) + " = " + solutions[i]);
-                }
+                System.out.println(Matriz.printVectorSolution(solutions));
                 break;
                 
             case 2:
                 /* Resolver el sistema utilizando Gauss-Jordan */
+                // Pendiente actualizar
                 
                 System.out.print("Ingrese el número de ecuaciones: ");
                 int numRows = input.nextInt();
