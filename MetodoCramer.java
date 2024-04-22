@@ -24,6 +24,48 @@ public class MetodoCramer {
      * @param constants    Le pasamos el vector con terminos independientes (los resultados)
      * @return 
      */
+    public static double[] solve(Matriz coeficientes, double[] constantes) {
+        // Variables
+        int n = constantes.length;
+        double[] soluciones = new double[n];
+        
+       double determinante = calculateDeterminant(coeficientes.getMatriz()); // Calcular la determinante de la matriz
+       
+       // Si la determinante es 0, no se puede resolver con el metodo de Cramer
+       if(determinante == 0) {
+           System.out.println("El sistema tiene una infinidad de soluciones...");
+           return null;
+       }
+       
+       // Ciclo de resolucion
+       for(int i = 0; i < n; i++) {
+           Matriz temp = new Matriz(n,n,"Matriz temporal");
+           
+           for(int j = 0; j < n; j++) {
+               for(int k = 0; k < n; k++) {
+                   if(k == i) {
+                       // Remplazar la columna requerida por los terminos independientes
+                       temp.updateMatrizVal(j, k, constantes[j]);
+                   }
+                   else {
+                       // dejar las otras columnas igual, dependiendo del paso actual
+                       temp.updateMatrizVal(j, k, coeficientes.getMatrizVal(j, k));
+                   }
+               }
+           }
+           
+           double detTemp = calculateDeterminant(temp.getMatriz()); // determinante temporal del paso actual
+           soluciones[i] = detTemp / determinante;
+       }
+       
+       return soluciones;
+    }
+    /**
+     * @deprecated
+     * @param coefficients
+     * @param constants
+     * @return 
+     */
     public static double[] solveUsingCramer(double[][] coefficients, double[] constants) {
         int n = constants.length;            // Numero de filas
         double[] solutions = new double[n];  // Vector de soluciones

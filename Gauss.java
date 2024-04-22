@@ -3,7 +3,7 @@ package net.diego.sistemasdeecuaciones;
 /**
  * INSTITUTO TECNOLOGICO DE LA PIEDAD
  * 
- * 18 de Abril 2024
+ * 20 de Abril 2024
  * 
  * PROYECTO: THE-MATRIX-SOLVER
  * 
@@ -63,6 +63,30 @@ public class Gauss {
             // imprimir paso
             System.out.println("Paso "+step+" : \n"+matriz.printMatriz());
             step++;
-        }   
+        }
+    }
+    
+    /* Este metodo esta incompleto */
+    public static void extractSolutions(Matriz matriz) {
+        int filas = matriz.getN()-1;
+        int columnas = matriz.getM()-1;
+        
+        double val = 0;
+        
+        for(; filas > 0; filas--) {
+            for(; columnas > 0; columnas--) {
+                val = matriz.getMatrizVal(filas, columnas);
+                
+                for(int f = 0; f <= filas; f++) {
+                    matriz.updateMatrizVal(f, columnas-1, 
+                        val * matriz.getMatrizVal(f, columnas-1)
+                    );
+                }
+            }
+        }
+        
+        System.out.println(val);      
+        
+        System.out.println("Solucion : \n"+matriz.printMatriz());
     }
 }

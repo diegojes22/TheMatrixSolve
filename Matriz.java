@@ -14,19 +14,16 @@ package net.diego.sistemasdeecuaciones;
  *  - Diego
  * 
  * Archivo:
- *  - Matriz.java -> Sujeto a cambios
+ *  - Matriz.java
  */
+
+// Posiblemente algunos metodos sean renombrados
 public class Matriz {
     /* Atributos */
     private double matriz[][];
     private int n;  // numero de filas
     private int m;  // numero de columnas
     private String nombre = "M";
-    
-    // La matriz "Resultado" esta pensada para poder
-    // ser reuelta por alguno de los metodos, ya sea
-    // de grammer, gauss o gauss-jordan.
-    private Matriz resultado;
     
     /* Metodos */
     // Constructores
@@ -42,6 +39,19 @@ public class Matriz {
         this.m = m;
         
         matriz = new double[n][m];
+    }
+    
+    /**
+     * Podemos inicializar el objeto solo
+     * con la matriz que queremos copiar.
+     * 
+     * @param matriz Matriz a clonar
+     */
+    public Matriz(double[][] matriz) {
+        this.matriz = matriz;
+        
+        this.n = matriz.length;
+        this.m = matriz[0].length;
     }
     
     /**
@@ -121,6 +131,22 @@ public class Matriz {
      */}
     public int getM() { return m; }
     
+    /**
+     * Obtenemos un valor espesifico de la posicion
+     * (n, m)
+     * 
+     * @param n
+     * @param m
+     * @return 
+     */
+    public double getMatrizVal(int n, int m) {
+        if(n > this.n || m > this.m) {
+            return 0;
+        }
+        
+        return matriz[n][m];
+    }
+    
     // Setters
     /**
      * Establecemos el valor de la matriz mediante
@@ -148,22 +174,6 @@ public class Matriz {
         }
          
         return str;
-    }
-    
-    /**
-     * Obtenemos un valor espesifico de la posicion
-     * (n, m)
-     * 
-     * @param n
-     * @param m
-     * @return 
-     */
-    public double getMatrizVal(int n, int m) {
-        if(n > this.n || m > this.m) {
-            return 0;
-        }
-        
-        return matriz[n][m];
     }
     
     /**
@@ -226,46 +236,11 @@ public class Matriz {
     }
     
     /**
-     * Nos permite actualizar la matriz "resultado"
-     * con el fin de poder observar el procedimiento
-     * de resolucion con algun metodo.
-     * 
-     * @param newMatrix 
-     */
-    public void actualizarResultado(Matriz newMatrix) {
-        this.resultado = newMatrix;
-    }
-    
-    /**
-     * Mostramos los valores que tiene la matriz
-     * "resultado". Util cuando se resuelva la
-     * matriz original con algun metodo como
-     * de Grammer o Gaussiano.
-     * 
-     * @return 
-     */
-    public String imprimirResultado() {
-        String str = "[\n";
-        
-        // Busqueda de los elementos
-        for(int i = 0; i < resultado.n; i++) {
-            str += "\t";
-            
-            for(int j = 0; j < resultado.m; j++) {
-                str += matriz[i][j] + " ";
-            }
-            
-            str += "\n";
-        }
-        
-        str += ']'; 
-        return str;
-    }
-    
-    /**
      * Obtenemos la dimension de la matriz 
      * en formato String para imprimirlo en
-     * consola
+     * consola.
+     * 
+     * No es muy util.
      * 
      * @return Devolvemos la dimension en String 
      */

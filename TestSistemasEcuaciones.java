@@ -26,6 +26,8 @@ public class TestSistemasEcuaciones {
         MetodoCramer cramer = new MetodoCramer();
         MetodoGaussJordan MetodoGaussJordan =new MetodoGaussJordan();
         
+        Matriz matriz = null;
+        
         Scanner input=new Scanner(System.in);
         int opcion;
         
@@ -59,7 +61,7 @@ public class TestSistemasEcuaciones {
                 }
                 
                 // Aplicar el metodo para la solucion
-                double[] solutions = cramer.solveUsingCramer(coeficientes.getMatriz(), constantes);
+                double[] solutions = cramer.solve(coeficientes, constantes);
 
                 // Imprimir la solucion
                 System.out.println(Matriz.printVectorSolution(solutions));
@@ -67,36 +69,46 @@ public class TestSistemasEcuaciones {
                 
             case 2:
                 /* Resolver el sistema utilizando Gauss-Jordan */
-                // Pendiente actualizar
-                
                 System.out.print("Ingrese el número de ecuaciones: ");
                 int numRows = input.nextInt();
                 int numCols = numRows + 1; // Número de columnas, incluyendo la columna de constantes o columna extendida
 
-                double[][] augmentedMatrix = new double[numRows][numCols]; // decarar matriz
+                //double[][] augmentedMatrix = new double[numRows][numCols]; // decarar matriz
+                matriz = new Matriz(numRows, numCols, "Metodo Gauss-Jordan");
 
                 // Solicitar los coeficientes y constantes
                 System.out.println("Ingrese los coeficientes de las ecuaciones:");
                 for (int i = 0; i < numRows; i++) {
                     for (int j = 0; j < numCols; j++) {
                         System.out.print("Ingrese el elemento (" + (i + 1) + "," + (j + 1) + "): ");
-                        augmentedMatrix[i][j] = input.nextDouble();
+                        matriz.updateMatrizVal(i, j, input.nextDouble());
                     }
                 }
 
                 // Resolver utilizando el método de Gauss-Jordan
-                solutions = MetodoGaussJordan.solveUsingGaussJordan(augmentedMatrix);
+                solutions = MetodoGaussJordan.solve(matriz);
 
-                // Mostrar soluciones
-                System.out.println("Soluciones:");
-                for (int i = 0; i < numRows; i++) {
-                    System.out.println("x" + (i + 1) + " = " + solutions[i]);
-                }
                 break;
                 
             case 3:
                 /* Metodo de eliminacion Gaussiana */
-                System.out.println("Proximamente ...");
+                System.out.print("Ingrese el numero de ecuaciones: ");
+                int filas = input.nextInt();
+                int columnas = filas + 1;
+                
+                matriz = new Matriz(filas, columnas, "Reduccion Gaussiana");
+                
+                // solicitar valores de la matriz
+                System.out.println("Ingrese los coeficiente de las ecuaciones: ");
+                for(int i = 0; i < filas; i++) {
+                    for(int j = 0; j < columnas; j++) {
+                        System.out.print("\tIngrese el elemento "+(i+1)+", "+(j+1)+": ");
+                        matriz.updateMatrizVal(i, j, input.nextDouble());
+                    }
+                }
+                
+                Gauss.solve(matriz);
+                
                 break;
                 
             default:

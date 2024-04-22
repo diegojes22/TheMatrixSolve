@@ -18,6 +18,60 @@ package net.diego.sistemasdeecuaciones;
  */
 
 public class MetodoGaussJordan {
+    public static double[] solve(Matriz matriz) {
+        // Variables
+        int filas = matriz.getN();
+        int columnas = matriz.getM();
+        
+        double pivote = 0;
+        
+        System.out.println("Matriz de coeficientes: \n"+matriz.printMatriz());
+        
+        // Ciclo de resolucion de Gauss-Jordan
+        for(int pivotePos = 0; pivotePos < filas; pivotePos++) {
+            // hacer el pivote 1 (si es diferente de 1)
+            pivote = matriz.getMatrizVal(pivotePos, pivotePos);
+            
+            for(int c = 0; c < columnas; c++) {
+                // dividir toda la fila entre el pivote
+                matriz.updateMatrizVal(pivotePos, c, 
+                    matriz.getMatrizVal(pivotePos, c) / pivote
+                );
+            }
+            
+            // hacer ceros los demas elementos
+            for(int f = 0; f < filas; f++) {
+                if(f != pivotePos) {
+                    double factor = matriz.getMatrizVal(f, pivotePos);
+                    
+                    for(int c = 0; c < columnas; c++) {
+                        matriz.updateMatrizVal(f, c,
+                            matriz.getMatrizVal(f, c) - factor * matriz.getMatrizVal(pivotePos, c)
+                        );
+                    }
+                    
+                }
+            }
+        }
+        
+        // Extraer las soluciones
+        double[] soluciones = new double[filas];
+        for(int i = 0; i < filas; i++) {
+            soluciones[i] = matriz.getMatrizVal(i, columnas-1);
+        }
+        
+        // Mostrar soluciones
+        System.out.println("Matriz resuleta: \n"+matriz.printMatriz());
+        System.out.println("Soluciones: \n"+matriz.printVectorSolution(soluciones));
+        
+        return soluciones;
+    }
+    
+    /**
+     * @deprecated
+     * @param augmentedMatrix
+     * @return 
+     */
     public static double[] solveUsingGaussJordan(double[][] augmentedMatrix) {
         int numRows = augmentedMatrix.length;     // Filas    -> n
         int numCols = augmentedMatrix[0].length;  // Columnas -> m
