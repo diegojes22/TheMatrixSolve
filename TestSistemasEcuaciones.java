@@ -21,7 +21,7 @@ import java.util.Scanner;
  */
 
 public class TestSistemasEcuaciones {
-    public static void  main(String args[]){
+    public static void main(String args[]){
         // Variables
         MetodoCramer cramer = new MetodoCramer();
         MetodoGaussJordan MetodoGaussJordan =new MetodoGaussJordan();
