@@ -21,41 +21,27 @@ import java.awt.event.*;
  */
 public class VisualMatrix extends JFrame implements ActionListener{
     /* Atributos */
+    int defineN;
+    int defineM;
+    
     Matriz valores;
-    double[] constantes = new double[3];
+    double[] constantes;
+    
+    boolean matrixExist = false;
     
     // Widgets
-    JLabel tagForX;           // Etiquetas
-    JLabel tagForY;
-    JLabel tagForZ;
-    JLabel tagForConst;
+    JToolBar actionsArea;
+    JButton configMatrix;
+    JButton clearMatrix;
     
-    // Mucho de todo este codigo y variables
-    // puede ser simplificado gracias a matrices
-    // y arreglos.
+    JLabel labelForSolvers;
     
-    JTextField inputX1;       // Entradas de X
-    JTextField inputX2;
-    JTextField inputX3;
-    
-    JTextField inputY1;       // Entradas de Y
-    JTextField inputY2;
-    JTextField inputY3;
-    
-    JTextField inputZ1;       // Entradas de Z
-    JTextField inputZ2;
-    JTextField inputZ3;
-    
-    JTextField inputConst1;   // Entradas de los terminos independientes
-    JTextField inputConst2;
-    JTextField inputConst3;
-    
-    JButton solveWithGauss;   // Botones para invocar el procedimiento
     JButton solveWithCramer;
+    JButton solveWithGauss;
+    JButton solveWithGaussJordan;
     
-    JLabel valueOfX;          // Etiquetas para los resultados
-    JLabel valueOfY;
-    JLabel valueOfZ;
+    JTextField[][] inputsNumbers;
+    JLabel[] resultVals;
     
     /* Metodos */
     // Constructor
@@ -66,110 +52,250 @@ public class VisualMatrix extends JFrame implements ActionListener{
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         // inicializar widgets
-        tagForX = new JLabel("X");
-        tagForY = new JLabel("Y");
-        tagForZ = new JLabel("Z");
-        tagForConst =new JLabel("Constantes");
+        actionsArea = new JToolBar();
+        configMatrix = new JButton("Configurar matriz");
+        clearMatrix = new JButton("Limpiar matriz");
         
-        solveWithCramer = new JButton("Resolver con Cramer");
+        labelForSolvers = new JLabel("Resolver con:");
         
-        inputX1 = new JTextField(); inputY1 = new JTextField(); inputZ1 = new JTextField(); inputConst1 = new JTextField(); // Entradas
-        inputX2 = new JTextField(); inputY2 = new JTextField(); inputZ2 = new JTextField(); inputConst2 = new JTextField(); // de las
-        inputX3 = new JTextField(); inputY3 = new JTextField(); inputZ3 = new JTextField(); inputConst3 = new JTextField(); // variables
-        
-        valueOfX = new JLabel("X = ");  // etiquetas para los resultados
-        valueOfZ = new JLabel("Y = ");
-        valueOfY = new JLabel("Z = ");
+        solveWithCramer = new JButton("Cramer");
+        solveWithGauss = new JButton("Gauss");
+        solveWithGaussJordan = new JButton("Gauss-Jordan");
         
         // estilizar widgets
-        tagForX.setBounds(0,10,83,20);
-        tagForY.setBounds(84,10,83,20);
-        tagForZ.setBounds(168, 10,83,20);
-        tagForConst.setBounds(252, 10, 83, 20);
+        configMatrix.setBounds(10, 10, 100, 20);
+        clearMatrix.setBounds(10, 30, 100, 20);
         
-        inputX1.setBounds(0,30,83,20);
-        inputX2.setBounds(84,30,83,20);
-        inputX3.setBounds(168,30,83,20);
-        inputConst1.setBounds(252, 30, 83, 20);
+        labelForSolvers.setBounds(10, 50, 150, 20);
         
-        inputY1.setBounds(0,50,83,20);
-        inputY2.setBounds(84,50,83,20);
-        inputY3.setBounds(168,50,83,20);
-        inputConst2.setBounds(252, 50, 83, 20);
-        
-        inputZ1.setBounds(0,70,83,20);
-        inputZ2.setBounds(84,70,83,20);
-        inputZ3.setBounds(168,70,83,20);
-        inputConst3.setBounds(252, 70, 83, 20);
-        
-        solveWithCramer.setBounds(10,110,100,20);
-        
-        valueOfX.setBounds(350, 10, 80, 20);
-        valueOfY.setBounds(350, 30, 80, 20);
-        valueOfZ.setBounds(350, 50, 80, 20);
+        solveWithCramer.setBounds(10, 80, 100, 20);
+        solveWithGauss.setBounds(10, 100, 100, 20);
+        solveWithGaussJordan.setBounds(10, 120, 100, 20);
         
         // Agregar widgets
-        this.add(tagForX);           // etiquetas
-        this.add(tagForY);
-        this.add(tagForZ);
+        this.add(configMatrix);
+        this.add(clearMatrix);
+        this.add(labelForSolvers);
+        this.add(solveWithCramer);
+        this.add(solveWithGauss);
+        this.add(solveWithGaussJordan);
         
-        this.add(inputX1);           // entradas de X
-        this.add(inputX2);
-        this.add(inputX3);
+        // Eventos
+        configMatrix.addActionListener(this);
+        clearMatrix.addActionListener(this);
         
-        this.add(inputY1);           // entradas de Y
-        this.add(inputY2);
-        this.add(inputY3);
-        
-        this.add(inputZ1);           // entradas de Z
-        this.add(inputZ2);
-        this.add(inputZ3);
-        
-        this.add(tagForConst);       // entradas de los terminos independientes
-        this.add(inputConst1);
-        this.add(inputConst2);
-        this.add(inputConst3);
-        
-        this.add(solveWithCramer);  // boton del procedimiento
-        
-        this.add(valueOfX);         // etiquetas con los resultados
-        this.add(valueOfY);
-        this.add(valueOfZ);
-        
-        // implementar eventos a los botones
         solveWithCramer.addActionListener(this);
+        solveWithGauss.addActionListener(this);
+        solveWithGaussJordan.addActionListener(this);
     }
     
-    // eventos programados
+    // Eventos
+    /**
+     * Verificamos las dimensiones de la matriz
+     * para evitar que sea muy grande o muy pequeña.
+     * 
+     * @return False si la matriz es muy grande o pequeña,
+     *         True si la matriz esta en las dimensiones aceptables.
+     */
+    private boolean checkSize() {
+        // Exeso de dimensiones
+        if(defineN > 9 || defineM > 9) {
+            JOptionPane.showMessageDialog(this, 
+          "La matriz es muy grande", 
+           "Advertencia", 
+       JOptionPane.WARNING_MESSAGE
+            );
+            return false;
+        }
+        // dimensiones minusculas o negativas
+        if(defineN < 2 || defineM < 2) {
+            JOptionPane.showMessageDialog(this, 
+          "La matriz es muy pequeña!", 
+           "Advertencia", 
+       JOptionPane.WARNING_MESSAGE
+            );
+            return false;
+        }
+        
+        return true;
+    }
+    
+    /**
+     * Creamos e inicializamos varios inputs en forma
+     * de matriz, que seran los datos de la matriz para 
+     * resolver un sistema de ecuacones.
+     */
+    private void createMatrix() {
+        // Variables
+        int cordX = 150;
+        int cordY = 10;
+        
+        // Verificamos si las dimensiones ingresadas por el usuario
+        // son correctas
+        if(!checkSize()) return;
+        
+        valores = new Matriz(defineN, defineM);  // matriz de cofactores
+        
+        inputsNumbers = new JTextField[defineN][defineM]; // inputs
+        resultVals = new JLabel[defineM-1];
+        
+        // Dar propiedades a los inputs
+        for(int i = 0; i < defineN; i++) {
+            for(int j = 0; j < defineM; j++) {
+                inputsNumbers[i][j] = new JTextField();
+                inputsNumbers[i][j].setBounds(cordX, cordY, 50, 20);
+                this.add(inputsNumbers[i][j]);
+                
+                this.repaint();
+                
+                cordX += 50;
+            }
+            
+            cordX = 150;  // reajuste de coordenadas
+            cordY += 20;
+        }
+        
+        // Dar propiedades a las etiquetas de los resultados
+        for(int i = 0; i < defineM-1; i++) {
+            resultVals[i] = new JLabel("X"+i+" = ...");
+            resultVals[i].setBounds(cordX, cordY, 50, 20);
+            this.add(resultVals[i]);
+            
+            this.repaint();
+            
+            cordX += 50;
+        }
+        
+        matrixExist = true;
+    }
+    
+    /**
+     * Eliminamos la matriz, las entradas y todo lo que tenga
+     * que ver con esta para poder crear otra.
+     */
+    private void clearMatrix() {
+        // remover matriz
+        for(int i = 0; i < defineN; i++) {
+            for(int j = 0; j < defineM; j++) {
+                inputsNumbers[i][j].setVisible(false);
+                this.remove(inputsNumbers[i][j]);
+            }
+        }
+        
+        // remover etiquetas de resultado
+        for(int i = 0; i < defineM-1; i++) {
+            this.remove(resultVals[i]);
+        }
+        
+        // restablecer valores
+        valores = null;
+        inputsNumbers = null;
+        resultVals = null;
+        
+        matrixExist = false;
+        
+        labelForSolvers.setText("Resolver con: ");
+        this.repaint();
+    }
+    
+    /**
+     * Obtenemos los valores correspondientes de los inputs
+     * y los introduciomos en nuestra matriz de cofactores.
+     */
     private void getAllValues() {
-        valores = new Matriz(3, 3);
-        
-        valores.updateMatrizVal(0,0, Double.parseDouble(inputX1.getText()));  // obtener los valores de la matriz
-        valores.updateMatrizVal(0,1, Double.parseDouble(inputX2.getText()));
-        valores.updateMatrizVal(0,2, Double.parseDouble(inputX3.getText()));
-        valores.updateMatrizVal(1,0, Double.parseDouble(inputY1.getText()));
-        valores.updateMatrizVal(1,1, Double.parseDouble(inputY2.getText()));
-        valores.updateMatrizVal(1,2, Double.parseDouble(inputY3.getText()));
-        valores.updateMatrizVal(2,0, Double.parseDouble(inputZ1.getText()));
-        valores.updateMatrizVal(2,1, Double.parseDouble(inputZ2.getText()));
-        valores.updateMatrizVal(2,2, Double.parseDouble(inputZ3.getText()));
-        
-        constantes[0] = Double.parseDouble(inputConst1.getText());  // obtener terminos independientes
-        constantes[1] = Double.parseDouble(inputConst2.getText());
-        constantes[2] = Double.parseDouble(inputConst3.getText());
-        
-        double solucion[] = MetodoCramer.solve(valores, constantes); // resolver
-        
-        valueOfX.setText("X = "+solucion[0]);  // mostrar solucion
-        valueOfY.setText("Y = "+solucion[1]);
-        valueOfZ.setText("Z = "+solucion[2]);
+        for(int i = 0; i < valores.getN(); i++) {
+            for(int j = 0; j < valores.getM(); j++) {
+                double val = Double.parseDouble(inputsNumbers[i][j].getText());
+                valores.updateMatrizVal(i, j, val);
+            }
+            System.out.println("");
+        }
+    }
+    
+    /**
+     * Mostramos los resultados en sus etiquetas correspondientes
+     * @param results 
+     */
+    private void setResults(double[] results) {
+        for(int i = 0; i < resultVals.length; i++) {
+            resultVals[i].setText("X"+1+" = "+results[i]);
+        }
+    }
+    
+    /** 
+     * Mostramos el metodo selecionado para resolver el
+     * sistema de ecuaciones.
+     * @param name 
+     */
+    private void showSelectedMethod(String name) {
+        labelForSolvers.setText("Metodo: "+name);
     }
     
     // Escucha de eventos
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == solveWithCramer) {
-            System.out.println("Resolver con el metodo de cramer");
+        // Crear matriz
+        if(e.getSource() == configMatrix && !matrixExist) {
+            try {
+                defineN = Integer.parseInt(JOptionPane.showInputDialog("Ingrese N: "));
+                defineM = Integer.parseInt(JOptionPane.showInputDialog("Ingrese M: "));
+                
+                createMatrix();
+            }
+            catch(Exception errno) {
+                JOptionPane.showMessageDialog(this, "Error: Ingrese un entero!");
+            }
+        }
+        
+        // Eliminar
+        else if(e.getSource() == clearMatrix) {
+            clearMatrix();
+        }
+        
+        // Resolver con Gauss-Jordan
+        else if(e.getSource() == solveWithGaussJordan && matrixExist) {
             getAllValues();
+            System.out.println(valores.printMatriz());
+            
+            constantes = MetodoGaussJordan.solve(valores);
+            setResults(constantes);
+            showSelectedMethod("Gauss-Jordan");
+        }
+        
+        // Resolver con Gauss
+        else if(e.getSource() == solveWithGauss && matrixExist) {
+            getAllValues();
+            System.out.println(valores.printMatriz());
+            
+            Gauss.solve(valores);
+            setResults(MetodoGaussJordan.solve(valores));
+            showSelectedMethod("Gauss");
+        }
+        
+        // Resolver con cramer
+        else if(e.getSource() == solveWithCramer && matrixExist) {
+            // Variables
+            getAllValues(); // obtengo valores desde los inputs
+            
+            int n = valores.getN();
+            int m = valores.getM()-1;
+            
+            Matriz temp = new Matriz(n, m);
+            double[] independientes = new double[m];
+            
+            // obtener los terminos independientes
+            for(int i = 0; i < n; i++) {
+                independientes[i] = valores.getMatrizVal(i, m);
+            }
+            
+            // Obtener matriz de coeficientes
+            for(int i = 0; i < n; i++) {
+                for(int j = 0; j < m; j++) {
+                    temp.updateMatrizVal(i, j, valores.getMatrizVal(i, j));
+                }
+            }
+            
+            setResults(MetodoCramer.solve(temp, independientes));
+            showSelectedMethod("Cramer");
         }
     }
     
