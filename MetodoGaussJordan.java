@@ -20,6 +20,9 @@ package net.diego.sistemasdeecuaciones;
 public class MetodoGaussJordan {
     public static double[] solve(Matriz matriz) {
         // Variables
+        int step = 1;
+        String method = "Metodo de Gauss-Jordan: \n";
+        
         int filas = matriz.getN();
         int columnas = matriz.getM();
         
@@ -37,6 +40,9 @@ public class MetodoGaussJordan {
                 matriz.updateMatrizVal(pivotePos, c, 
                     matriz.getMatrizVal(pivotePos, c) / pivote
                 );
+                
+                method += "Paso "+step+":\n"+matriz.printMatriz()+"\n\n";
+                step++;
             }
             
             // hacer ceros los demas elementos
@@ -50,6 +56,8 @@ public class MetodoGaussJordan {
                         );
                     }
                     
+                    method += "Paso "+step+":\n"+matriz.printMatriz()+"\n\n";
+                    step++;
                 }
             }
         }
@@ -64,6 +72,7 @@ public class MetodoGaussJordan {
         System.out.println("Matriz resuleta: \n"+matriz.printMatriz());
         System.out.println("Soluciones: \n"+matriz.printVectorSolution(soluciones));
         
+        saveMethod(method);
         return soluciones;
     }
     
@@ -130,5 +139,16 @@ public class MetodoGaussJordan {
         System.out.println("");
         
         return solutions;
+    }
+    
+    /**
+     * Guardamos el procedimiento
+     * @param method 
+     */
+    private static void saveMethod(String method) {
+        AppLog log = new AppLog();
+        log.write(method);
+        
+        log = null;
     }
 }

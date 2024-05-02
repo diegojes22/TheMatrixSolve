@@ -26,9 +26,11 @@ public class Gauss {
         int columnas = matriz.getM();
         
         int step = 1; // Observar en que paso vamos
+        String method = "Metodo de reduccion Gaussiana\n"; // aqui se guarda el procedimiento
         
         // Imprimir la matriz original
         System.out.println("Matriz original: \n"+matriz.printMatriz());
+        method += "Matriz original = \n"+matriz.printMatriz()+"\n\n";
         
         for(pivotePos = 0; pivotePos < columnas - 1; pivotePos++) {
             // Verifivar si el pivote correspondiente es 1
@@ -42,8 +44,9 @@ public class Gauss {
                     if(valorActual != 0) matriz.updateMatrizVal(pivotePos, c, (valorActual / pivote) );
                 }
                 
-                // imprimri paso
+                // imprimir paso
                 System.out.println("Paso "+step+" : \n"+matriz.printMatriz());
+                method += "Paso "+step+":\n"+matriz.printMatriz()+"\n\n";
                 step++;
             }
             
@@ -62,8 +65,11 @@ public class Gauss {
             
             // imprimir paso
             System.out.println("Paso "+step+" : \n"+matriz.printMatriz());
+            method += "Paso "+step+":\n"+matriz.printMatriz()+"\n\n";
             step++;
         }
+        
+        saveMethod(method);
     }
     
     /* Este metodo esta incompleto */
@@ -88,5 +94,16 @@ public class Gauss {
         System.out.println(val);      
         
         System.out.println("Solucion : \n"+matriz.printMatriz());
+    }
+    
+    /**
+     * Guardamos el procedimiento
+     * @param method 
+     */
+    private static void saveMethod(String method) {
+        AppLog log = new AppLog();
+        log.write(method);
+        
+        log = null;
     }
 }

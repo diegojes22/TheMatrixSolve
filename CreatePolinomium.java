@@ -1,8 +1,20 @@
 package net.diego.sistemasdeecuaciones;
 
 /**
- *
- * @author Diego Muñoz
+ * INSTITUTO TECNOLOGICO DE LA PIEDAD
+ * 
+ * 28 de Abril 2024
+ * 
+ * PROYECTO: THE-MATRIX-SOLVER
+ * 
+ * Grupo: 2-C
+ * Equipo:
+ *  - El Adrian
+ *  - Juan Carlos
+ *  - Diego
+ * 
+ * Archivo:
+ *  - CreatePolinomium
  */
 public class CreatePolinomium {
     /* Atributos */

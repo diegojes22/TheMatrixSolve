@@ -26,40 +26,50 @@ public class MetodoCramer {
      */
     public static double[] solve(Matriz coeficientes, double[] constantes) {
         // Variables
+        int step = 1;
+        String method = "Metodo de Cramer:\n";
+        
         int n = constantes.length;
         double[] soluciones = new double[n];
         
-       double determinante = calculateDeterminant(coeficientes.getMatriz()); // Calcular la determinante de la matriz
-       
-       // Si la determinante es 0, no se puede resolver con el metodo de Cramer
-       if(determinante == 0) {
-           System.out.println("El sistema tiene una infinidad de soluciones...");
-           return null;
-       }
-       
-       // Ciclo de resolucion
-       for(int i = 0; i < n; i++) {
-           Matriz temp = new Matriz(n,n,"Matriz temporal");
-           
-           for(int j = 0; j < n; j++) {
-               for(int k = 0; k < n; k++) {
-                   if(k == i) {
-                       // Remplazar la columna requerida por los terminos independientes
-                       temp.updateMatrizVal(j, k, constantes[j]);
-                   }
-                   else {
-                       // dejar las otras columnas igual, dependiendo del paso actual
-                       temp.updateMatrizVal(j, k, coeficientes.getMatrizVal(j, k));
-                   }
-               }
-           }
-           
-           double detTemp = calculateDeterminant(temp.getMatriz()); // determinante temporal del paso actual
-           soluciones[i] = detTemp / determinante;
-       }
-       
-       return soluciones;
+        double determinante = calculateDeterminant(coeficientes.getMatriz()); // Calcular la determinante de la matriz
+
+        // Si la determinante es 0, no se puede resolver con el metodo de Cramer
+        if(determinante == 0) {
+            System.out.println("El sistema tiene una infinidad de soluciones...");
+            saveMethod("El sistema de ecuaciones tiene una infinidad de soluciones o no tiene solucion.");
+            
+            return null;
+        }
+
+        // Ciclo de resolucion
+        for(int i = 0; i < n; i++) {
+            Matriz temp = new Matriz(n,n,"Matriz temporal");
+
+            for(int j = 0; j < n; j++) {
+                for(int k = 0; k < n; k++) {
+                    if(k == i) {
+                        // Remplazar la columna requerida por los terminos independientes
+                        temp.updateMatrizVal(j, k, constantes[j]);
+                    }
+                    else {
+                        // dejar las otras columnas igual, dependiendo del paso actual
+                        temp.updateMatrizVal(j, k, coeficientes.getMatrizVal(j, k));
+                    }
+                }
+                
+                method += "Paso "+step+":\n"+temp.printMatriz()+"\n\n";
+                step++;
+            }
+
+            double detTemp = calculateDeterminant(temp.getMatriz()); // determinante temporal del paso actual
+            soluciones[i] = detTemp / determinante;
+        }
+        
+        saveMethod(method);
+        return soluciones;
     }
+    
     /**
      * @deprecated
      * @param coefficients
@@ -144,5 +154,16 @@ public class MetodoCramer {
         }
         
         return determinant;
+    }
+    
+    /**
+     * Guardamos el procedimiento
+     * @param method 
+     */
+    private static void saveMethod(String method) {
+        AppLog log = new AppLog();
+        log.write(method);
+        
+        log = null;
     }
 }
