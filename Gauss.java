@@ -14,7 +14,7 @@ package net.diego.sistemasdeecuaciones;
  *  - Diego
  * 
  * Archivo:
- *  - MetodoGaussJordan.java -> OK
+ *  - MetodoGauss.java -> OK
  */
 public class Gauss {
     public static void solve(Matriz matriz) {

@@ -19,7 +19,7 @@ import java.awt.event.*;
  * Archivo:
  *  - 
  */
-public class VisualMatrix extends JFrame implements ActionListener{
+public class MatrixApp extends JFrame implements ActionListener{
     /* Atributos */
     int defineN;
     int defineM;
@@ -45,7 +45,7 @@ public class VisualMatrix extends JFrame implements ActionListener{
     
     /* Metodos */
     // Constructor
-    public VisualMatrix() {
+    public MatrixApp() {
         // Propiedades basica de la ventana
         this.setLayout(null);
         this.setBounds(10,10,500,350);
@@ -301,7 +301,7 @@ public class VisualMatrix extends JFrame implements ActionListener{
     
     /* Zona de pruevas */
     public static void main(String[] args) {
-        VisualMatrix win = new VisualMatrix();
+        MatrixApp win = new MatrixApp();
         
         win.setVisible(true);
     }

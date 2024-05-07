@@ -15,10 +15,10 @@ import java.awt.event.*;
  *  - El Adrian
  *  - Juan Carlos
  *  - Diego
- * 
  *
  */
-public class PolinomiumMatrix extends JFrame implements ActionListener, ItemListener{
+
+public class PoliApp extends JFrame implements ActionListener, ItemListener{
     /* Atributos */
     private int grade;
     private boolean pointsExists = false;
@@ -48,7 +48,7 @@ public class PolinomiumMatrix extends JFrame implements ActionListener, ItemList
     
     /* Metodos */
     // Constructor
-    public PolinomiumMatrix() {
+    public PoliApp() {
         configWin();
         
         initWidgets();
@@ -326,11 +326,12 @@ public class PolinomiumMatrix extends JFrame implements ActionListener, ItemList
             }
             
             fx = CreatePolinomium.getPolinomium(MetodoCramer.solve(temp, independientes));
-            tagForPolinomium.setText("f(x) = "+fx);
         }
         
-        
         createOutSystem();
+        tagForPolinomium.setText("f(x) = "+fx);
+            
+        System.out.println(fx);
         //simpleMessage("Graficando", "Pulse OK para continuar..."); // freno para evitar mas subprocesos
         //CreatePolinomium.grapichs(fx); // graficar polinomio
     }
@@ -396,6 +397,6 @@ public class PolinomiumMatrix extends JFrame implements ActionListener, ItemList
     
     /* Test zone */
     public static void main(String[] args) {
-        PolinomiumMatrix win = new PolinomiumMatrix();
+        PoliApp win = new PoliApp();
     }
 }

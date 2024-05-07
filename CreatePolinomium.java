@@ -123,7 +123,7 @@ public class CreatePolinomium {
     public static void grapichs(String function) {
         try {
             // Invocar script para graficar
-            String command = "python D:\\ProgramingProyects\\Python\\graficadora\\main.py \""+function+"\"";
+            String command = "python \"C:\\Users\\Diego Muñoz\\Documents\\NetBeansProjects\\SistemasDeEcuaciones\\src\\main\\java\\net\\diego\\sistemasdeecuaciones\\more\\Graficadora.py\" \""+function+"\"";
             Process child = Runtime.getRuntime().exec(command);
         }
         catch (Exception errno) {
